@@ -1,0 +1,32 @@
+{
+    "name": "Appalachia.ReactionSystem",
+    "rootNamespace": "",
+    "references": [
+        "GUID:195705ddaa6fe6c42a576177c5d36a5c",
+        "GUID:a15d55b77c0da1b42af8372f5619c965",
+        "GUID:4a600fa6fa2ca854b8f233a23710b315",
+        "GUID:01789cac4a2597b458bedef85a39c3f2",
+        "GUID:4c32fdd75da6bc94f9b79f03f11f5e30",
+        "GUID:52c3a4fa2ed74f14faae11aff711e57d",
+        "GUID:55480544bf2803d4b8897bbc17b67656",
+        "GUID:cf75d8bea22d8fb469a2aa239cfc6930",
+        "GUID:36d8f80e87e14524585781443a3734b1",
+        "GUID:a4d999b198ed04a449148ce79f89f0f4",
+        "GUID:3f3a2990c4ac26b4cb19df5e8f108661",
+        "GUID:61d5c5627f609f946a4c3771484d27dd",
+        "GUID:e4907a1800edd2044b0e2650032812b1",
+        "GUID:6b8c99229a4703f47b9e6e696c2e8d8d",
+        "GUID:28ae00157ecf0354981e730179f52cc3",
+        "GUID:a03736e1d95a0ed4c8a44e1ee02df53f",
+        "GUID:d8b63aba1907145bea998dd612889d6b"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
