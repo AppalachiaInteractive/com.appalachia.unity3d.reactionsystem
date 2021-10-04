@@ -10,7 +10,7 @@ namespace Appalachia.ReactionSystem.TouchBend.Data
                                           IEquatable<TouchBendComponentInfo>
     {
         public Texture2D texture;
-        
+
         [ReadOnly] public float size;
 
         [PropertyRange(-1f, 1f)] public float offset;
@@ -37,12 +37,12 @@ namespace Appalachia.ReactionSystem.TouchBend.Data
             }
 
             return base.Equals(other) &&
-                Equals(texture, other.texture) &&
-                size.Equals(other.size) &&
-                offset.Equals(other.offset) &&
-                strength.Equals(other.strength) &&
-                minOld.Equals(other.minOld) &&
-                maxOld.Equals(other.maxOld);
+                   Equals(texture, other.texture) &&
+                   size.Equals(other.size) &&
+                   offset.Equals(other.offset) &&
+                   strength.Equals(other.strength) &&
+                   minOld.Equals(other.minOld) &&
+                   maxOld.Equals(other.maxOld);
         }
 
         public override bool Equals(object obj)

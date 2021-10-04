@@ -12,22 +12,32 @@ namespace Appalachia.ReactionSystem.Cameras
     public struct SubsystemCameraComponent
     {
         private const string _PRF_PFX = nameof(SubsystemCameraComponent) + ".";
-        
-        [SmartLabel, HorizontalGroup("Data", .5f)]
+
+        private static readonly ProfilerMarker _PRF_CreateCamera =
+            new(_PRF_PFX + nameof(CreateCamera));
+
+        private static readonly ProfilerMarker _PRF_UpdateCamera =
+            new(_PRF_PFX + nameof(UpdateCamera));
+
+        private static readonly ProfilerMarker _PRF_GetCameraRootPosition =
+            new(_PRF_PFX + nameof(GetCameraRootPosition));
+
+        [SmartLabel]
+        [HorizontalGroup("Data", .5f)]
         public ReactionSubsystemCenter center;
-        
-        [SmartLabel, HorizontalGroup("Data", .5f)]
+
+        [SmartLabel]
+        [HorizontalGroup("Data", .5f)]
         public Camera renderCamera;
-        
-        public RenderTexture renderTexture => showRenderTexture ? renderCamera.targetTexture : null;
-        public bool showRenderTexture => renderCamera != null;
-        
+
         [HideInInspector] public bool renderCameraPresent;
         [HideInInspector] public bool centerPresent;
         [HideInInspector] public bool hasReplacementShader;
         [HideInInspector] public bool shaderReplaced;
 
-        private static readonly ProfilerMarker _PRF_CreateCamera = new ProfilerMarker(_PRF_PFX + nameof(CreateCamera));
+        public RenderTexture renderTexture => showRenderTexture ? renderCamera.targetTexture : null;
+        public bool showRenderTexture => renderCamera != null;
+
         public static Camera CreateCamera(ReactionSubsystemCamera baseCamera, string cameraName)
         {
             using (_PRF_CreateCamera.Auto())
@@ -50,7 +60,8 @@ namespace Appalachia.ReactionSystem.Cameras
 
                     cameraGO.transform.SetParent(baseTransform, false);
                     cameraGO.transform.position = baseCamera.cameraOffset;
-                    cameraGO.transform.rotation = Quaternion.LookRotation(baseCamera.cameraDirection);
+                    cameraGO.transform.rotation =
+                        Quaternion.LookRotation(baseCamera.cameraDirection);
 
                     var tempEditorCamera = cameraGO.AddComponent<Camera>();
                     tempEditorCamera.orthographicSize = 50f;
@@ -67,7 +78,6 @@ namespace Appalachia.ReactionSystem.Cameras
             }
         }
 
-        private static readonly ProfilerMarker _PRF_UpdateCamera = new ProfilerMarker(_PRF_PFX + nameof(UpdateCamera));
         public static void UpdateCamera(ReactionSubsystemCamera baseCamera, Camera subsystemCamera)
         {
             using (_PRF_UpdateCamera.Auto())
@@ -109,7 +119,6 @@ namespace Appalachia.ReactionSystem.Cameras
             }
         }
 
-        private static readonly ProfilerMarker _PRF_GetCameraRootPosition = new ProfilerMarker(_PRF_PFX + nameof(GetCameraRootPosition));
         public Vector3 GetCameraRootPosition()
         {
             using (_PRF_GetCameraRootPosition.Auto())
@@ -118,7 +127,7 @@ namespace Appalachia.ReactionSystem.Cameras
                 {
                     return center.GetPosition();
                 }
-            
+
                 return Vector3.zero;
             }
         }

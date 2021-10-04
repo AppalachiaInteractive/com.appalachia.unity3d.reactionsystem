@@ -13,6 +13,7 @@ namespace Appalachia.ReactionSystem.TouchBend
         protected override string SubsystemName => _systemName;
 
         public override bool AutomaticRender => true;
+
         public override bool IsManualRenderingRequired(SubsystemCameraComponent cam)
         {
             return false;
@@ -28,7 +29,7 @@ namespace Appalachia.ReactionSystem.TouchBend
             {
                 cullingMask = LayerMask.GetMask(LayerMask.LayerToName(29));
             }
-            
+
             cameraComponent.renderCamera.depth = -90;
         }
 
@@ -39,7 +40,7 @@ namespace Appalachia.ReactionSystem.TouchBend
         protected override void OnRenderStart()
         {
         }
-        
+
         protected override void OnRenderComplete()
         {
             Shader.SetGlobalTexture(GSC.TOUCHBEND._TOUCHBEND_CURRENT_STATE_MAP_MASK, renderTexture);

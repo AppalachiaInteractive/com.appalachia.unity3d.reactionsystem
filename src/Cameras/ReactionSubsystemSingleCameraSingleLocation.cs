@@ -5,12 +5,14 @@ using UnityEngine;
 namespace Appalachia.ReactionSystem.Cameras
 {
     [Serializable]
-    public abstract class ReactionSubsystemSingleCameraSingleLocation : ReactionSubsystemSingleCamera
+    public abstract class
+        ReactionSubsystemSingleCameraSingleLocation : ReactionSubsystemSingleCamera
     {
         private const string _PRF_PFX = nameof(ReactionSubsystemSingleCameraSingleLocation) + ".";
 
-        private static readonly ProfilerMarker _PRF_OnRenderStart = new ProfilerMarker(_PRF_PFX + nameof(OnRenderStart));
-        
+        private static readonly ProfilerMarker _PRF_OnRenderStart =
+            new(_PRF_PFX + nameof(OnRenderStart));
+
         protected override void OnRenderStart()
         {
             using (_PRF_OnRenderStart.Auto())
@@ -20,7 +22,7 @@ namespace Appalachia.ReactionSystem.Cameras
                 pos += cameraOffset;
 
                 var ct = cameraComponent.renderCamera.transform;
-                
+
                 ct.position = pos;
                 ct.rotation = Quaternion.LookRotation(cameraDirection, Vector3.forward);
             }

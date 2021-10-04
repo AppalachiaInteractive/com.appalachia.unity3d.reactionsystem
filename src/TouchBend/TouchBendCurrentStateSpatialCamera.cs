@@ -10,10 +10,10 @@ namespace Appalachia.ReactionSystem.TouchBend
     {
         private const string _systemName = "TOUCH_BEND_CURRENT_STATE_SPATIAL";
 
+        public Vector4 mapMinXZ;
+
         protected override string SubsystemName => _systemName;
 
-        public Vector4 mapMinXZ;
-        
         public override bool AutomaticRender => true;
 
         public override bool IsManualRenderingRequired(SubsystemCameraComponent cam)
@@ -39,17 +39,19 @@ namespace Appalachia.ReactionSystem.TouchBend
 
         protected override void OnRenderStart()
         {
-            
         }
-        
+
         protected override void OnRenderComplete()
         {
-            Shader.SetGlobalTexture(GSC.TOUCHBEND._TOUCHBEND_CURRENT_STATE_MAP_SPATIAL, renderTexture);
+            Shader.SetGlobalTexture(
+                GSC.TOUCHBEND._TOUCHBEND_CURRENT_STATE_MAP_SPATIAL,
+                renderTexture
+            );
 
             var targetPosition = cameraComponent.center.transform.position;
 
             mapMinXZ = new Vector4(targetPosition.x, targetPosition.y, targetPosition.z);
-            
+
             mapMinXZ.z = -mapMinXZ.z;
             mapMinXZ.w = orthographicSize * 2;
             mapMinXZ.x -= orthographicSize;

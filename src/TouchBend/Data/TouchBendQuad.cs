@@ -23,7 +23,7 @@ namespace Appalachia.ReactionSystem.TouchBend.Data
     [ExecuteAlways]
     public class TouchBendQuad : MonoBehaviour
     {
-        #region Runtime
+#region Runtime
 
         [FoldoutGroup("Runtime")]
         [InlineProperty]
@@ -38,24 +38,23 @@ namespace Appalachia.ReactionSystem.TouchBend.Data
         public LayerSelection renderLayer = 29;
 
         [FoldoutGroup("Runtime")]
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         [OnValueChanged(nameof(RecreateShot))]
-        #endif
+#endif
         [PropertyOrder(-90)]
-        public List<Renderer> references = new List<Renderer>();
+        public List<Renderer> references = new();
 
         [FoldoutGroup("Runtime")]
         [PropertyOrder(-80)]
         [ReadOnly]
         public Bounds bounds;
-        
-        [ReadOnly]
-        public Vector3 lastPosition;
-        
-        [ReadOnly]
-        public float velocity;
-        [ReadOnly]
-        public float targetVelocity;
+
+        [ReadOnly] public Vector3 lastPosition;
+
+        [ReadOnly] public float velocity;
+
+        [ReadOnly] public float targetVelocity;
+
         [PropertyRange(0.01f, .99f)]
         public float velocityChangeSpeed = 0.5f;
 
@@ -133,7 +132,11 @@ namespace Appalachia.ReactionSystem.TouchBend.Data
                 {
                     var child = transform.GetChild(i);
 
-                    if (string.Equals(child.name, "TOUCHBEND", StringComparison.InvariantCultureIgnoreCase))
+                    if (string.Equals(
+                        child.name,
+                        "TOUCHBEND",
+                        StringComparison.InvariantCultureIgnoreCase
+                    ))
                     {
                         go = child.gameObject;
 
@@ -175,7 +178,7 @@ namespace Appalachia.ReactionSystem.TouchBend.Data
             }
 
             quadFilter.sharedMesh = GSR.instance.touchbendQuadMesh;
-            
+
             quadRenderer.enabled = true;
             quadRenderer.gameObject.layer = renderLayer;
             quadRenderer.materials = new[] {renderMaterial};
@@ -190,10 +193,10 @@ namespace Appalachia.ReactionSystem.TouchBend.Data
             {
                 renderMaterial.SetTexture("_MainTex", info.texture);
             }
-            
+
             renderMaterial.SetFloat(GSC.TOUCHBEND._STRENGTH, info.strength);
-            renderMaterial.SetFloat(GSC.TOUCHBEND._MIN_OLD, info.minOld);
-            renderMaterial.SetFloat(GSC.TOUCHBEND._MAX_OLD, info.maxOld);
+            renderMaterial.SetFloat(GSC.TOUCHBEND._MIN_OLD,  info.minOld);
+            renderMaterial.SetFloat(GSC.TOUCHBEND._MAX_OLD,  info.maxOld);
             renderMaterial.SetFloat(GSC.TOUCHBEND._VELOCITY, velocity);
         }
 
@@ -214,20 +217,19 @@ namespace Appalachia.ReactionSystem.TouchBend.Data
             var center = bounds.center;
             center.y = bounds.min.y;
             t.position = center;
-            
+
             var localPosition = t.localPosition;
             localPosition += Vector3.forward * info.offset;
-            
+
             t.localPosition = localPosition;
-            
+
             t.localScale = Vector3.one * (info.size * info.scale);
         }
-        
-        
+
         private void Update()
         {
-            #if UNITY_EDITOR
-            
+#if UNITY_EDITOR
+
             if (finishShot)
             {
                 finishShot = false;
@@ -246,13 +248,12 @@ namespace Appalachia.ReactionSystem.TouchBend.Data
                 SetRenderTexture();
                 finishShot2 = false;
             }
-            
-            #endif
+
+#endif
 
             var t = transform;
             var p = t.position;
 
-            
             targetVelocity = (p - lastPosition).magnitude / Time.deltaTime;
 
             velocity = Mathf.Lerp(velocity, targetVelocity, velocityChangeSpeed);
@@ -261,11 +262,9 @@ namespace Appalachia.ReactionSystem.TouchBend.Data
             lastPosition = p;
         }
 
+#endregion
 
-        #endregion
-
-        
-        #region Editor
+#region Editor
 
 #if UNITY_EDITOR
         public Camera quadCam;
@@ -343,7 +342,7 @@ namespace Appalachia.ReactionSystem.TouchBend.Data
             {
                 quadCam = CreateQuadCamera();
             }
-            
+
             UpdateCameraParameters();
 
             quadCam.enabled = true;
@@ -375,7 +374,7 @@ namespace Appalachia.ReactionSystem.TouchBend.Data
 
         private void SetRenderTexture()
         {
-            renderMaterial.SetTexture("_MainTex", dirty ? render : (Texture) info.texture);
+            renderMaterial.SetTexture("_MainTex", dirty ? render : info.texture);
             UpdateRenderParameters(false);
         }
 
@@ -438,14 +437,24 @@ namespace Appalachia.ReactionSystem.TouchBend.Data
 
                 if (generationMaterial == null)
                 {
-                    generationMaterial = new Material(GSR.instance.touchbendQuadGenerator) {enableInstancing = true};
+                    generationMaterial =
+                        new Material(GSR.instance.touchbendQuadGenerator) {enableInstancing = true};
                 }
 
                 generationMaterial.SetVector(GSC.TOUCHBEND._GENERATION_MASK, modelCutoff);
                 generationMaterial.SetFloat(GSC.TOUCHBEND._GENERATION_SCALE, modelScale);
-                generationMaterial.SetTexture(GSC.TOUCHBEND._GENERATION_BACKGROUND, GSR.instance.touchbendQuadBase);
+                generationMaterial.SetTexture(
+                    GSC.TOUCHBEND._GENERATION_BACKGROUND,
+                    GSR.instance.touchbendQuadBase
+                );
 
-                Graphics.DrawMesh(mesh, positionMatrix, generationMaterial, generationLayer, quadCam);
+                Graphics.DrawMesh(
+                    mesh,
+                    positionMatrix,
+                    generationMaterial,
+                    generationLayer,
+                    quadCam
+                );
             }
 
             dirty = true;
@@ -476,11 +485,15 @@ namespace Appalachia.ReactionSystem.TouchBend.Data
 
                 if (addChildRenderers)
                 {
-                    references = gameObject.GetComponentsInChildren<Renderer>().Where(r => r.name != "TOUCHBEND").ToList();
+                    references = gameObject.GetComponentsInChildren<Renderer>()
+                                           .Where(r => r.name != "TOUCHBEND")
+                                           .ToList();
                 }
                 else
                 {
-                    references = gameObject.GetComponents<Renderer>().Where(r => r.name != "TOUCHBEND").ToList();
+                    references = gameObject.GetComponents<Renderer>()
+                                           .Where(r => r.name != "TOUCHBEND")
+                                           .ToList();
                 }
 
                 UpdateCameraParameters();
@@ -567,7 +580,6 @@ namespace Appalachia.ReactionSystem.TouchBend.Data
             else
             {
                 tbc = camTransform.gameObject.GetComponent<Camera>();
-                
             }
 
             return tbc;
@@ -620,10 +632,13 @@ namespace Appalachia.ReactionSystem.TouchBend.Data
 
             var textureResolution = renderQuality.GetRenderQualityPixelResolution();
 
-            info.texture = new Texture2D(textureResolution, textureResolution, textureFormat, true, true)
-            {
-                name = newTextureName, alphaIsTransparency = false, filterMode = FilterMode.Point
-            };
+            info.texture =
+                new Texture2D(textureResolution, textureResolution, textureFormat, true, true)
+                {
+                    name = newTextureName,
+                    alphaIsTransparency = false,
+                    filterMode = FilterMode.Point
+                };
 
             var srgbWrite = GL.sRGBWrite;
             GL.sRGBWrite = false;
@@ -672,50 +687,85 @@ namespace Appalachia.ReactionSystem.TouchBend.Data
             {
                 var rawdata = info.texture.GetRawTextureData<RG16>();
 
-                new GaussianBlurRG16Job(rawdata, info.texture.width, info.texture.height, blurRadius).Schedule()
-                    .Complete();
+                new GaussianBlurRG16Job(
+                        rawdata,
+                        info.texture.width,
+                        info.texture.height,
+                        blurRadius
+                    ).Schedule()
+                     .Complete();
             }
             else if (info.texture.format == TextureFormat.RGHalf)
             {
                 var rawdata = info.texture.GetRawTextureData<RGHalf>();
 
-                new GaussianBlurRGHalfJob(rawdata, info.texture.width, info.texture.height, blurRadius).Schedule()
-                    .Complete();
+                new GaussianBlurRGHalfJob(
+                        rawdata,
+                        info.texture.width,
+                        info.texture.height,
+                        blurRadius
+                    ).Schedule()
+                     .Complete();
             }
             else if (info.texture.format == TextureFormat.RGFloat)
             {
                 var rawdata = info.texture.GetRawTextureData<RGFloat>();
 
-                new GaussianBlurRGFloatJob(rawdata, info.texture.width, info.texture.height, blurRadius).Schedule()
-                    .Complete();
+                new GaussianBlurRGFloatJob(
+                        rawdata,
+                        info.texture.width,
+                        info.texture.height,
+                        blurRadius
+                    ).Schedule()
+                     .Complete();
             }
             else if (info.texture.format == TextureFormat.RGB24)
             {
                 var rawdata = info.texture.GetRawTextureData<RGB24>();
 
-                new GaussianBlurRGB24Job(rawdata, info.texture.width, info.texture.height, blurRadius).Schedule()
-                    .Complete();
+                new GaussianBlurRGB24Job(
+                        rawdata,
+                        info.texture.width,
+                        info.texture.height,
+                        blurRadius
+                    ).Schedule()
+                     .Complete();
             }
             else if (info.texture.format == TextureFormat.RGBA32)
             {
                 var rawdata = info.texture.GetRawTextureData<RGBA32>();
 
-                new GaussianBlurRGBA32Job(rawdata, info.texture.width, info.texture.height, blurRadius).Schedule()
-                    .Complete();
+                new GaussianBlurRGBA32Job(
+                        rawdata,
+                        info.texture.width,
+                        info.texture.height,
+                        blurRadius
+                    ).Schedule()
+                     .Complete();
             }
             else if (info.texture.format == TextureFormat.RGBAHalf)
             {
                 var rawdata = info.texture.GetRawTextureData<RGBAHalf>();
 
-                new GaussianBlurRGBAHalfJob(rawdata, info.texture.width, info.texture.height, blurRadius).Schedule()
-                    .Complete();
+                new GaussianBlurRGBAHalfJob(
+                        rawdata,
+                        info.texture.width,
+                        info.texture.height,
+                        blurRadius
+                    ).Schedule()
+                     .Complete();
             }
             else if (info.texture.format == TextureFormat.RGBAFloat)
             {
                 var rawdata = info.texture.GetRawTextureData<RGBAFloat>();
 
-                new GaussianBlurRGBAFloatJob(rawdata, info.texture.width, info.texture.height, blurRadius).Schedule()
-                    .Complete();
+                new GaussianBlurRGBAFloatJob(
+                        rawdata,
+                        info.texture.width,
+                        info.texture.height,
+                        blurRadius
+                    ).Schedule()
+                     .Complete();
             }
 
             info.texture.Apply();
@@ -752,8 +802,10 @@ namespace Appalachia.ReactionSystem.TouchBend.Data
                         for (var y = -1; y < 2; y++)
                         {
                             var index = i + (y * w) + x;
-                            if ((index >= 0) && (index < cols.Length) && (cols[index].a > 0.5f)
-                            ) // if a non transparent pixel is near the transparent one, add the transparent pixel index to border indices
+                            if ((index >= 0) &&
+                                (index < cols.Length) &&
+                                (cols[index].a >
+                                 0.5f)) // if a non transparent pixel is near the transparent one, add the transparent pixel index to border indices
                             {
                                 borderIndices.Add(i);
                                 goto End;
@@ -939,6 +991,6 @@ namespace Appalachia.ReactionSystem.TouchBend.Data
 
 #endif
 
-        #endregion
+#endregion
     }
 }

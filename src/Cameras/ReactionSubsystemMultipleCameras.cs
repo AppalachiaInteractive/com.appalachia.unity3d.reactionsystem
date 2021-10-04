@@ -10,30 +10,41 @@ namespace Appalachia.ReactionSystem.Cameras
     public abstract class ReactionSubsystemMultipleCameras : ReactionSubsystemCamera
     {
         private const string _PRF_PFX = nameof(ReactionSubsystemMultipleCameras) + ".";
-        
+
+        private static readonly ProfilerMarker _PRF_OnInitialization =
+            new(_PRF_PFX + nameof(OnInitialization));
+
+        private static readonly ProfilerMarker _PRF_InitializeUpdateLoop =
+            new(_PRF_PFX + nameof(InitializeUpdateLoop));
+
+        private static readonly ProfilerMarker _PRF_DoUpdateLoop =
+            new(_PRF_PFX + nameof(DoUpdateLoop));
+
+        private static readonly ProfilerMarker _PRF_TeardownSubsystem =
+            new(_PRF_PFX + nameof(TeardownSubsystem));
+
         [ListDrawerSettings]
         [OnValueChanged(nameof(Initialize), true)]
         [SerializeField]
-        public List<SubsystemCameraComponent> cameraComponents = new List<SubsystemCameraComponent>();
+        public List<SubsystemCameraComponent> cameraComponents = new();
 
-        private int _renderTextureMax => cameraComponents.Count - 1;
-        
         [FoldoutGroup("Preview")]
         [PropertyOrder(-100)]
         [PropertyRange(0, nameof(_renderTextureMax))]
         public int selectedRenderTexture;
 
+        private int _renderTextureMax => cameraComponents.Count - 1;
+
         protected override bool showRenderTexture =>
-            cameraComponents != null &&
-            cameraComponents.Count > 0 &&
-            selectedRenderTexture > 0 &&
-            selectedRenderTexture < cameraComponents.Count &&
+            (cameraComponents != null) &&
+            (cameraComponents.Count > 0) &&
+            (selectedRenderTexture > 0) &&
+            (selectedRenderTexture < cameraComponents.Count) &&
             cameraComponents[selectedRenderTexture].showRenderTexture;
 
-        public override RenderTexture renderTexture => cameraComponents[selectedRenderTexture].renderTexture;
+        public override RenderTexture renderTexture =>
+            cameraComponents[selectedRenderTexture].renderTexture;
 
-        private static readonly ProfilerMarker _PRF_OnInitialization = new ProfilerMarker(_PRF_PFX + nameof(OnInitialization));
-        
         protected override void OnInitialization()
         {
             using (_PRF_OnInitialization.Auto())
@@ -59,12 +70,13 @@ namespace Appalachia.ReactionSystem.Cameras
                     }
 
                     var objName = $"{SubsystemName}_{i}";
-                
+
                     gameObject.name = objName;
 
                     if (!cameraComponent.renderCamera)
                     {
-                        cameraComponent.renderCamera = SubsystemCameraComponent.CreateCamera(this, objName);
+                        cameraComponent.renderCamera =
+                            SubsystemCameraComponent.CreateCamera(this, objName);
                     }
 
                     if (cameraComponent.renderCamera)
@@ -81,13 +93,12 @@ namespace Appalachia.ReactionSystem.Cameras
             }
         }
 
-        private static readonly ProfilerMarker _PRF_InitializeUpdateLoop = new ProfilerMarker(_PRF_PFX + nameof(InitializeUpdateLoop));
         protected override bool InitializeUpdateLoop()
         {
             using (_PRF_InitializeUpdateLoop.Auto())
             {
                 var successful = false;
-            
+
                 for (var i = 0; i < cameraComponents.Count; i++)
                 {
                     var cameraComponent = cameraComponents[i];
@@ -107,15 +118,14 @@ namespace Appalachia.ReactionSystem.Cameras
             }
         }
 
-        private static readonly ProfilerMarker _PRF_DoUpdateLoop = new ProfilerMarker(_PRF_PFX + nameof(DoUpdateLoop));
         protected override void DoUpdateLoop()
         {
             using (_PRF_DoUpdateLoop.Auto())
             {
                 OnUpdateLoopStart();
-                
+
                 for (var i = 0; i < cameraComponents.Count; i++)
-                {                
+                {
                     var cameraComponent = cameraComponents[i];
 
                     if (!ShouldRenderCamera(cameraComponent, i, cameraComponents.Count))
@@ -126,58 +136,66 @@ namespace Appalachia.ReactionSystem.Cameras
                     if (AutomaticRender)
                     {
                         OnRenderStart(cameraComponent);
-                
+
                         cameraComponent.renderCamera.enabled = true;
 
                         if (cameraComponent.hasReplacementShader && !cameraComponent.shaderReplaced)
                         {
-                            cameraComponent.renderCamera.SetReplacementShader(replacementShader, null);
+                            cameraComponent.renderCamera.SetReplacementShader(
+                                replacementShader,
+                                null
+                            );
                             cameraComponent.shaderReplaced = true;
                         }
-                
+
                         OnRenderComplete(cameraComponent);
                     }
                     else
                     {
                         cameraComponent.renderCamera.enabled = false;
-                
+
                         if (!IsManualRenderingRequired(cameraComponent))
                         {
                             return;
                         }
-                
+
                         OnRenderStart(cameraComponent);
-                
+
                         if (cameraComponent.hasReplacementShader)
                         {
-                            cameraComponent.renderCamera.RenderWithShader(replacementShader, replacementShaderTag);
+                            cameraComponent.renderCamera.RenderWithShader(
+                                replacementShader,
+                                replacementShaderTag
+                            );
                         }
                         else
                         {
                             cameraComponent.renderCamera.Render();
                         }
-                
+
                         OnRenderComplete(cameraComponent);
                     }
                 }
             }
         }
-        
+
         protected abstract void OnBeforeInitialization();
-        
+
         protected abstract void OnInitializationStart(SubsystemCameraComponent cam);
-        
+
         protected abstract void OnInitializationComplete(SubsystemCameraComponent cam);
-        
+
         protected abstract void OnUpdateLoopStart();
-        
-        protected abstract bool ShouldRenderCamera(SubsystemCameraComponent cam, int cameraIndex, int totalCameras);
-        
+
+        protected abstract bool ShouldRenderCamera(
+            SubsystemCameraComponent cam,
+            int cameraIndex,
+            int totalCameras);
+
         protected abstract void OnRenderStart(SubsystemCameraComponent camera);
-        
+
         protected abstract void OnRenderComplete(SubsystemCameraComponent camera);
 
-        private static readonly ProfilerMarker _PRF_TeardownSubsystem = new ProfilerMarker(_PRF_PFX + nameof(TeardownSubsystem));
         protected override void TeardownSubsystem()
         {
             using (_PRF_TeardownSubsystem.Auto())
@@ -185,11 +203,11 @@ namespace Appalachia.ReactionSystem.Cameras
                 for (var i = 0; i < cameraComponents.Count; i++)
                 {
                     var cameraComponent = cameraComponents[i];
-                
+
                     if (cameraComponent.renderCamera)
                     {
                         cameraComponent.renderCamera.enabled = false;
-                
+
                         var rt = cameraComponent.renderCamera.targetTexture;
                         cameraComponent.renderCamera.targetTexture = null;
 

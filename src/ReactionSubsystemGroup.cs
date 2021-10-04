@@ -14,24 +14,47 @@ namespace Appalachia.ReactionSystem
     public class ReactionSubsystemGroup
     {
         private const string _PRF_PFX = nameof(ReactionSubsystemGroup) + ".";
-        
+
         private const string titleGroupName = "Group Profile";
         private const string titleGroupDetailName = titleGroupName + "/Details";
         private const string subsystemGroupName = "Create New Subsystems";
         private const string subsystemHorizontalGroupName = subsystemGroupName + "/Create";
         private const string subsystemsName = "Subsystems";
         private const string cameraHideName = nameof(lockSize);
-        private const string cameraFoldoutName = cameraHideName+"/Camera";
-        
-        [TitleGroup(titleGroupName), OnValueChanged(nameof(InitializeRoot))]
+        private const string cameraFoldoutName = cameraHideName + "/Camera";
+
+        private static readonly ProfilerMarker _PRF_Initialize = new(_PRF_PFX + nameof(Initialize));
+
+        private static readonly ProfilerMarker _PRF_InitializeAll =
+            new(_PRF_PFX + nameof(InitializeAll));
+
+        private static readonly ProfilerMarker _PRF_InitializeRoot =
+            new(_PRF_PFX + nameof(InitializeRoot));
+
+        private static readonly ProfilerMarker _PRF_InitializeCamera =
+            new(_PRF_PFX + nameof(InitializeCamera));
+
+        private static readonly ProfilerMarker _PRF_UpdateActive =
+            new(_PRF_PFX + nameof(UpdateActive));
+
+        private static readonly ProfilerMarker _PRF_UpdateSubsystems =
+            new(_PRF_PFX + nameof(UpdateSubsystems));
+
+        private static readonly ProfilerMarker _PRF_CreateNewSubsystem =
+            new(_PRF_PFX + nameof(CreateNewSubsystem));
+
+        [TitleGroup(titleGroupName)]
+        [OnValueChanged(nameof(InitializeRoot))]
         public string groupName;
-        
-        [HorizontalGroup(titleGroupDetailName), OnValueChanged(nameof(UpdateActive))]
+
+        [HorizontalGroup(titleGroupDetailName)]
+        [OnValueChanged(nameof(UpdateActive))]
         public bool enabled;
-        
-        [HorizontalGroup(titleGroupDetailName), ReadOnly]
+
+        [HorizontalGroup(titleGroupDetailName)]
+        [ReadOnly]
         public int groupIndex;
-        
+
         [TitleGroup(subsystemsName)]
         [ListDrawerSettings(HideAddButton = true)]
         public List<ReactionSubsystemBase> subsystems;
@@ -44,27 +67,62 @@ namespace Appalachia.ReactionSystem
 
         [HideInInspector] public bool lockSize;
 
-        [SerializeField, HideInInspector]
+        [SerializeField]
+        [HideInInspector]
         private ReactionSystem _mainSystem;
 
-        [SerializeField, HideInInspector]
+        [SerializeField]
+        [HideInInspector]
         private Transform _root;
 
-        private static readonly ProfilerMarker _PRF_Initialize = new ProfilerMarker(_PRF_PFX + nameof(Initialize));
-        public void Initialize(
-            ReactionSystem mainSystem, 
-            int groupIndex)
+        private ValueDropdownList<Type> _subsystemTypeList;
+
+        [BoxGroup(subsystemGroupName)]
+        [HorizontalGroup(subsystemHorizontalGroupName, .8f)]
+        [ValueDropdown(nameof(SubsystemTypeList))]
+        [LabelWidth(100)]
+        [LabelText("Subsystem")]
+        [ShowInInspector]
+        public Type createSubsystemType;
+
+        private ValueDropdownList<Type> SubsystemTypeList
+        {
+            get
+            {
+                if (_subsystemTypeList == null)
+                {
+                    _subsystemTypeList = new ValueDropdownList<Type>();
+                }
+
+                if (_subsystemTypeList.Count == 0)
+                {
+                    var inheritors = typeof(ReactionSubsystemBase).GetAllConcreteInheritors();
+
+                    for (var i = 0; i < inheritors.Count; i++)
+                    {
+                        var inheritor = inheritors[i];
+
+                        _subsystemTypeList.Add(inheritor.GetReadableName(), inheritor);
+                    }
+                }
+
+                return _subsystemTypeList;
+            }
+        }
+
+        private bool _canCreateSubsystem => (_mainSystem != null) && (createSubsystemType != null);
+
+        public void Initialize(ReactionSystem mainSystem, int groupIndex)
         {
             using (_PRF_Initialize.Auto())
             {
                 _mainSystem = mainSystem;
                 this.groupIndex = groupIndex;
-            
+
                 InitializeAll();
             }
         }
 
-        private static readonly ProfilerMarker _PRF_InitializeAll = new ProfilerMarker(_PRF_PFX + nameof(InitializeAll));
         private void InitializeAll()
         {
             using (_PRF_InitializeAll.Auto())
@@ -73,7 +131,6 @@ namespace Appalachia.ReactionSystem
             }
         }
 
-        private static readonly ProfilerMarker _PRF_InitializeRoot = new ProfilerMarker(_PRF_PFX + nameof(InitializeRoot));
         private void InitializeRoot()
         {
             using (_PRF_InitializeRoot.Auto())
@@ -82,7 +139,6 @@ namespace Appalachia.ReactionSystem
             }
         }
 
-        private static readonly ProfilerMarker _PRF_InitializeCamera = new ProfilerMarker(_PRF_PFX + nameof(InitializeCamera));
         private void InitializeCamera()
         {
             using (_PRF_InitializeCamera.Auto())
@@ -91,7 +147,6 @@ namespace Appalachia.ReactionSystem
             }
         }
 
-        private static readonly ProfilerMarker _PRF_UpdateActive = new ProfilerMarker(_PRF_PFX + nameof(UpdateActive));
         private void UpdateActive()
         {
             using (_PRF_UpdateActive.Auto())
@@ -100,7 +155,6 @@ namespace Appalachia.ReactionSystem
             }
         }
 
-        private static readonly ProfilerMarker _PRF_UpdateSubsystems = new ProfilerMarker(_PRF_PFX + nameof(UpdateSubsystems));
         private void UpdateSubsystems(
             bool updateRoot,
             bool initializeSubsystems,
@@ -121,13 +175,13 @@ namespace Appalachia.ReactionSystem
                     {
                         _mainSystem.groups = new List<ReactionSubsystemGroup>();
                     }
-                
+
                     for (var i = 0; i < _mainSystem.groups.Count; i++)
                     {
                         var group = _mainSystem.groups[i];
 
                         group.groupIndex = i;
-                    
+
                         if (group.subsystems == null)
                         {
                             group.subsystems = new List<ReactionSubsystemBase>();
@@ -151,22 +205,20 @@ namespace Appalachia.ReactionSystem
 
                     _root.name = groupName;
                 }
-            
+
                 if (subsystems == null)
                 {
                     subsystems = new List<ReactionSubsystemBase>();
                     return;
                 }
-                else
-                {
-                    if (subsystems.Count == 0)
-                    {
-                        var subs = _root.GetComponentsInChildren<ReactionSubsystemBase>();
 
-                        foreach (var sub in subs)
-                        {
-                            subsystems.Add(sub);
-                        }
+                if (subsystems.Count == 0)
+                {
+                    var subs = _root.GetComponentsInChildren<ReactionSubsystemBase>();
+
+                    foreach (var sub in subs)
+                    {
+                        subsystems.Add(sub);
                     }
                 }
 
@@ -192,49 +244,16 @@ namespace Appalachia.ReactionSystem
 
                     if (initializeSubsystems)
                     {
-                        subsystem.InitializeSubsystem(_mainSystem, groupIndex);                    
+                        subsystem.InitializeSubsystem(_mainSystem, groupIndex);
                     }
                 }
             }
         }
 
-        private ValueDropdownList<Type> _subsystemTypeList;
-        
-        private ValueDropdownList<Type> SubsystemTypeList
-        {
-            get
-            {
-                if (_subsystemTypeList == null) _subsystemTypeList = new ValueDropdownList<Type>();
-
-                if (_subsystemTypeList.Count == 0)
-                {
-                    var inheritors = typeof(ReactionSubsystemBase).GetAllConcreteInheritors();
-
-                    for (var i = 0; i < inheritors.Count; i++)
-                    {
-                        var inheritor = inheritors[i];
-
-                        _subsystemTypeList.Add(inheritor.GetReadableName(), inheritor);
-                    }
-                }
-
-                return _subsystemTypeList;
-            }
-        }
-
-        
-        
-        [BoxGroup(subsystemGroupName)]
-        [HorizontalGroup(subsystemHorizontalGroupName, .8f)]
-        [ValueDropdown(nameof(SubsystemTypeList)), LabelWidth(100), LabelText("Subsystem"), ShowInInspector]
-        public Type createSubsystemType;
-
-        private bool _canCreateSubsystem => _mainSystem != null && createSubsystemType != null;
-
-        private static readonly ProfilerMarker _PRF_CreateNewSubsystem = new ProfilerMarker(_PRF_PFX + nameof(CreateNewSubsystem));
         [BoxGroup(subsystemGroupName)]
         [HorizontalGroup(subsystemHorizontalGroupName, .1f)]
-        [Button("Create"), EnableIf(nameof(_canCreateSubsystem))]
+        [Button("Create")]
+        [EnableIf(nameof(_canCreateSubsystem))]
         public void CreateNewSubsystem()
         {
             using (_PRF_CreateNewSubsystem.Auto())
@@ -245,11 +264,9 @@ namespace Appalachia.ReactionSystem
                 child.transform.SetParent(_root, false);
 
                 var subsystem = child.AddComponent(createSubsystemType);
-            
+
                 subsystems.Add(subsystem as ReactionSubsystemBase);
             }
         }
-        
-        
     }
 }

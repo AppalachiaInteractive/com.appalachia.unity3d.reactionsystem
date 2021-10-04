@@ -11,14 +11,10 @@ namespace Appalachia.ReactionSystem.Base
     public abstract class ReactionSubsystemBase : InternalMonoBehaviour
     {
         private const string _PRF_PFX = nameof(ReactionSubsystemBase) + ".";
-        
-        protected abstract string SubsystemName { get; }
 
         public ReactionSystem mainSystem;
 
         [SerializeField] private int _groupIndex;
-
-        protected ReactionSubsystemGroup Group => (mainSystem) ? mainSystem.groups[_groupIndex] : null;
 
         [SerializeField]
         [FoldoutGroup("Texture")]
@@ -41,16 +37,24 @@ namespace Appalachia.ReactionSystem.Base
         [ValueDropdown(nameof(depths))]
         public int depth;
 
-        private ValueDropdownList<int> depths = new ValueDropdownList<int>()
+        private ValueDropdownList<int> depths = new()
         {
-            {0},
-            {8},
-            {16},
-            {24},
-            {32}
+            0,
+            8,
+            16,
+            24,
+            32
         };
 
-        [InlineProperty, ShowInInspector]
+        private bool updateLoopInitialized;
+
+        protected abstract string SubsystemName { get; }
+
+        protected ReactionSubsystemGroup Group =>
+            mainSystem ? mainSystem.groups[_groupIndex] : null;
+
+        [InlineProperty]
+        [ShowInInspector]
         [PreviewField(ObjectFieldAlignment.Center, Height = 256)]
         [FoldoutGroup("Preview")]
         [ShowIf(nameof(showRenderTexture))]
@@ -65,48 +69,6 @@ namespace Appalachia.ReactionSystem.Base
             updateLoopInitialized = false;
             Initialize();
         }
-
-        private void OnEnable()
-        {
-            updateLoopInitialized = false;
-            Initialize();
-        }
-
-        protected abstract void TeardownSubsystem();
-
-        private void OnDisable()
-        {
-            TeardownSubsystem();
-            updateLoopInitialized = false;
-        }
-
-        protected abstract void OnInitialization();
-
-        public void InitializeSubsystem(ReactionSystem system, int groupIndex)
-        {
-            mainSystem = system;
-            _groupIndex = groupIndex;
-
-            Initialize();
-        }
-
-        [Button]
-        public void Initialize()
-        {
-            gameObject.name = SubsystemName;
-
-            OnInitialization();
-        }
-        public void UpdateGroupIndex(int i)
-        {
-            _groupIndex = i;
-        }
-        
-        private bool updateLoopInitialized;
-
-        protected abstract bool InitializeUpdateLoop();
-
-        protected abstract void DoUpdateLoop();
 
         private void Update()
         {
@@ -130,5 +92,45 @@ namespace Appalachia.ReactionSystem.Base
             }
         }
 
+        private void OnEnable()
+        {
+            updateLoopInitialized = false;
+            Initialize();
+        }
+
+        private void OnDisable()
+        {
+            TeardownSubsystem();
+            updateLoopInitialized = false;
+        }
+
+        protected abstract void TeardownSubsystem();
+
+        protected abstract void OnInitialization();
+
+        public void InitializeSubsystem(ReactionSystem system, int groupIndex)
+        {
+            mainSystem = system;
+            _groupIndex = groupIndex;
+
+            Initialize();
+        }
+
+        [Button]
+        public void Initialize()
+        {
+            gameObject.name = SubsystemName;
+
+            OnInitialization();
+        }
+
+        public void UpdateGroupIndex(int i)
+        {
+            _groupIndex = i;
+        }
+
+        protected abstract bool InitializeUpdateLoop();
+
+        protected abstract void DoUpdateLoop();
     }
 }

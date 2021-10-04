@@ -13,31 +13,23 @@ namespace Appalachia.ReactionSystem.Base
     public class ReactionSubsystemCenter : InternalMonoBehaviour
     {
         private const string _PRF_PFX = nameof(ReactionSubsystemCenter) + ".";
-        
+
+        private static readonly ProfilerMarker _PRF_OnDrawGizmosSelected =
+            new(_PRF_PFX + nameof(OnDrawGizmosSelected));
+
+        private static readonly ProfilerMarker _PRF_GetPosition =
+            new(_PRF_PFX + nameof(GetPosition));
+
+        private static readonly ProfilerMarker _PRF_ValidateSubsystems =
+            new(_PRF_PFX + nameof(ValidateSubsystems));
+
         public Vector3 offset;
 
         public Color gizmoColor = Color.cyan;
-        
-        [FormerlySerializedAs("systems")] 
-        public List<ReactionSubsystemBase> subsystems = new List<ReactionSubsystemBase>();
-        
-#if UNITY_EDITOR
 
-        private static readonly ProfilerMarker _PRF_OnDrawGizmosSelected = new ProfilerMarker(_PRF_PFX + nameof(OnDrawGizmosSelected));
-        private void OnDrawGizmosSelected()
-        {
-            using (_PRF_OnDrawGizmosSelected.Auto())
-            {
-                if (!GizmoCameraChecker.ShouldRenderGizmos())
-                {
-                    return;
-                }
-                
-                SmartHandles.DrawWireSphere(GetPosition(), 2f, gizmoColor);
-            }
-        }
-#endif
-        private static readonly ProfilerMarker _PRF_GetPosition = new ProfilerMarker(_PRF_PFX + nameof(GetPosition));
+        [FormerlySerializedAs("systems")]
+        public List<ReactionSubsystemBase> subsystems = new();
+
         public Vector3 GetPosition()
         {
             using (_PRF_GetPosition.Auto())
@@ -46,7 +38,6 @@ namespace Appalachia.ReactionSystem.Base
             }
         }
 
-        private static readonly ProfilerMarker _PRF_ValidateSubsystems = new ProfilerMarker(_PRF_PFX + nameof(ValidateSubsystems));
         public void ValidateSubsystems()
         {
             using (_PRF_ValidateSubsystems.Auto())
@@ -55,7 +46,7 @@ namespace Appalachia.ReactionSystem.Base
                 {
                     subsystems = new List<ReactionSubsystemBase>();
                 }
-            
+
                 for (var i = subsystems.Count - 1; i >= 0; i--)
                 {
                     var subsystem = subsystems[i];
@@ -67,5 +58,21 @@ namespace Appalachia.ReactionSystem.Base
                 }
             }
         }
+
+#if UNITY_EDITOR
+
+        private void OnDrawGizmosSelected()
+        {
+            using (_PRF_OnDrawGizmosSelected.Auto())
+            {
+                if (!GizmoCameraChecker.ShouldRenderGizmos())
+                {
+                    return;
+                }
+
+                SmartHandles.DrawWireSphere(GetPosition(), 2f, gizmoColor);
+            }
+        }
+#endif
     }
 }

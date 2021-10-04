@@ -10,10 +10,17 @@ namespace Appalachia.ReactionSystem
     public class ReactionSystem : InternalMonoBehaviour
     {
         private const string _PRF_PFX = nameof(ReactionSystem) + ".";
+
+        private static readonly ProfilerMarker _PRF_Awake = new(_PRF_PFX + nameof(Awake));
+
+        private static readonly ProfilerMarker _PRF_Start = new(_PRF_PFX + nameof(Start));
+
+        private static readonly ProfilerMarker _PRF_OnEnable = new(_PRF_PFX + nameof(OnEnable));
+
+        private static readonly ProfilerMarker _PRF_Initialize = new(_PRF_PFX + nameof(Initialize));
         public List<ReactionSubsystemGroup> groups;
 
-        private static readonly ProfilerMarker _PRF_Awake = new ProfilerMarker(_PRF_PFX + nameof(Awake));
-        void Awake()
+        private void Awake()
         {
             using (_PRF_Awake.Auto())
             {
@@ -21,8 +28,7 @@ namespace Appalachia.ReactionSystem
             }
         }
 
-        private static readonly ProfilerMarker _PRF_Start = new ProfilerMarker(_PRF_PFX + nameof(Start));
-        void Start()
+        private void Start()
         {
             using (_PRF_Start.Auto())
             {
@@ -30,7 +36,6 @@ namespace Appalachia.ReactionSystem
             }
         }
 
-        private static readonly ProfilerMarker _PRF_OnEnable = new ProfilerMarker(_PRF_PFX + nameof(OnEnable));
         private void OnEnable()
         {
             using (_PRF_OnEnable.Auto())
@@ -39,7 +44,6 @@ namespace Appalachia.ReactionSystem
             }
         }
 
-        private static readonly ProfilerMarker _PRF_Initialize = new ProfilerMarker(_PRF_PFX + nameof(Initialize));
         private void Initialize()
         {
             using (_PRF_Initialize.Auto())
@@ -49,7 +53,7 @@ namespace Appalachia.ReactionSystem
                     groups = new List<ReactionSubsystemGroup>();
                 }
 
-                for (int i = groups.Count - 1; i >= 0; i--)
+                for (var i = groups.Count - 1; i >= 0; i--)
                 {
                     var group = groups[i];
 
@@ -58,7 +62,7 @@ namespace Appalachia.ReactionSystem
                         groups.RemoveAt(i);
                         continue;
                     }
-                
+
                     group.Initialize(this, i);
                 }
             }
