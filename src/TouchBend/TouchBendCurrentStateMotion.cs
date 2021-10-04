@@ -1,10 +1,10 @@
 using Appalachia.Core.Extensions;
-using Appalachia.Core.Globals.Shading;
-using Appalachia.Core.ReactionSystem.Base;
+using Appalachia.Globals.Shading;
+using Appalachia.ReactionSystem.Base;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace Appalachia.Core.ReactionSystem.TouchBend
+namespace Appalachia.ReactionSystem.TouchBend
 {
     [ExecuteAlways]
     [DisallowMultipleComponent]

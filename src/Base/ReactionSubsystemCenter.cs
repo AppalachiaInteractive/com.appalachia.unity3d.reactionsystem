@@ -1,12 +1,12 @@
 using System.Collections.Generic;
-using Appalachia.Core.Behaviours;
-using Appalachia.Core.Editing;
-using Appalachia.Core.Editing.Handle;
+using Appalachia.Base.Behaviours;
+using Appalachia.Editing.Debugging;
+using Appalachia.Editing.Debugging.Handle;
 using Unity.Profiling;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Appalachia.Core.ReactionSystem.Base
+namespace Appalachia.ReactionSystem.Base
 {
     [ExecuteAlways]
     [DisallowMultipleComponent]

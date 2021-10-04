@@ -1,9 +1,9 @@
 using System;
-using Appalachia.Core.Scriptables;
+using Appalachia.Base.Scriptables;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace Appalachia.Core.ReactionSystem.TouchBend.Data
+namespace Appalachia.ReactionSystem.TouchBend.Data
 {
     [Serializable]
     public class TouchBendComponentInfo : SelfSavingScriptableObject<TouchBendComponentInfo>,

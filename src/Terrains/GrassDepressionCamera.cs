@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using Appalachia.Core.ReactionSystem.Base;
-using Appalachia.Core.ReactionSystem.Cameras;
+using Appalachia.ReactionSystem.Base;
+using Appalachia.ReactionSystem.Cameras;
 using UnityEngine;
 
-namespace Appalachia.Core.ReactionSystem.Terrains
+namespace Appalachia.ReactionSystem.Terrains
 {
     public class GrassDepressionCamera : ReactionSubsystemSingleCameraSingleLocation
     {

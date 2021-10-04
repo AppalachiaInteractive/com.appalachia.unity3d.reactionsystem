@@ -1,10 +1,10 @@
 using System;
-using Appalachia.Core.Editing.Attributes;
+using Appalachia.Editing.Attributes;
 using Sirenix.OdinInspector;
 using Unity.Profiling;
 using UnityEngine;
 
-namespace Appalachia.Core.ReactionSystem.Cameras
+namespace Appalachia.ReactionSystem.Cameras
 {
     [Serializable]
     public abstract class ReactionSubsystemSingleCamera : ReactionSubsystemCamera

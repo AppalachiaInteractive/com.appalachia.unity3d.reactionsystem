@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
-using Appalachia.Core.ReactionSystem.Base;
-using Appalachia.Core.ReactionSystem.Cameras;
+using Appalachia.ReactionSystem.Base;
+using Appalachia.ReactionSystem.Cameras;
 using Appalachia.Utility.Reflection.Extensions;
 using Sirenix.OdinInspector;
 using Unity.Profiling;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Appalachia.Core.ReactionSystem
+namespace Appalachia.ReactionSystem
 {
     [Serializable]
     public class ReactionSubsystemGroup

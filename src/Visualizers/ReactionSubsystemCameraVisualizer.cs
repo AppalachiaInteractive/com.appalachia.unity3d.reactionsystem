@@ -1,12 +1,12 @@
 #if UNITY_EDITOR
 using Appalachia.Core.Extensions;
-using Appalachia.Core.ReactionSystem.Cameras;
-using Appalachia.Core.Visualizers.Base;
+using Appalachia.Editing.Visualizers.Base;
+using Appalachia.ReactionSystem.Cameras;
 using Sirenix.OdinInspector;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Appalachia.Core.Visualizers
+namespace Appalachia.ReactionSystem.Visualizers
 {
     public class ReactionSubsystemCameraVisualizer : InstancedIndirectSpatialMapVisualization
     {

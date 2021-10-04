@@ -1,10 +1,10 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Appalachia.Core.ReactionSystem.Base;
+using Appalachia.ReactionSystem.Base;
 using Unity.Profiling;
 using UnityEngine;
 
-namespace Appalachia.Core.ReactionSystem.Cameras
+namespace Appalachia.ReactionSystem.Cameras
 {
     [Serializable]
     public struct SubsystemCameraShotSelector : IEquatable<SubsystemCameraShotSelector>

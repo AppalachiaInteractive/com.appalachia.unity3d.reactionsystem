@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using Appalachia.Core.Behaviours;
+using Appalachia.Base.Behaviours;
 using Unity.Profiling;
 using UnityEngine;
 
-namespace Appalachia.Core.ReactionSystem
+namespace Appalachia.ReactionSystem
 {
     [ExecuteAlways]
     [DisallowMultipleComponent]

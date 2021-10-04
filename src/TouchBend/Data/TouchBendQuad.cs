@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Appalachia.Core.Editing;
 using Appalachia.Core.Extensions;
-using Appalachia.Core.Globals.Jobs.TextureJobs.Jobs;
-using Appalachia.Core.Globals.Jobs.TextureJobs.Structures;
-using Appalachia.Core.Globals.Shading;
+using Appalachia.Core.Layers;
+using Appalachia.Core.Types.Enums;
+using Appalachia.Globals.Shading;
+using Appalachia.Jobs.TextureJobs.Jobs;
+using Appalachia.Jobs.TextureJobs.Structures;
 using Sirenix.OdinInspector;
 using Unity.Jobs;
 using UnityEditor;
@@ -17,7 +18,7 @@ using UnityEngine.Rendering;
 
 #endif
 
-namespace Appalachia.Core.ReactionSystem.TouchBend.Data
+namespace Appalachia.ReactionSystem.TouchBend.Data
 {
     [ExecuteAlways]
     public class TouchBendQuad : MonoBehaviour

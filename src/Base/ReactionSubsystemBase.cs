@@ -1,10 +1,10 @@
 using System;
-using Appalachia.Core.Behaviours;
-using Appalachia.Core.Extensions;
+using Appalachia.Base.Behaviours;
+using Appalachia.Core.Types.Enums;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace Appalachia.Core.ReactionSystem.Base
+namespace Appalachia.ReactionSystem.Base
 {
     [ExecuteAlways]
     [Serializable]

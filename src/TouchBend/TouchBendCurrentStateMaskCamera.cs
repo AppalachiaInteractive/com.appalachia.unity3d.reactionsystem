@@ -1,8 +1,8 @@
-using Appalachia.Core.Globals.Shading;
-using Appalachia.Core.ReactionSystem.Cameras;
+using Appalachia.Globals.Shading;
+using Appalachia.ReactionSystem.Cameras;
 using UnityEngine;
 
-namespace Appalachia.Core.ReactionSystem.TouchBend
+namespace Appalachia.ReactionSystem.TouchBend
 {
     [ExecuteAlways]
     [DisallowMultipleComponent]

@@ -1,8 +1,8 @@
 using System;
-using Appalachia.Core.ReactionSystem.Base;
+using Appalachia.ReactionSystem.Base;
 using Sirenix.OdinInspector;
 
-namespace Appalachia.Core.ReactionSystem.Cameras
+namespace Appalachia.ReactionSystem.Cameras
 {
     [Serializable]
     public abstract class ReactionSubsystemSingleCameraMultipleLocationsShotSelector : ReactionSubsystemSingleCameraMultipleLocations

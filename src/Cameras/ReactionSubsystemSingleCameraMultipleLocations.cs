@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Appalachia.Core.ReactionSystem.Base;
+using Appalachia.ReactionSystem.Base;
 using Sirenix.OdinInspector;
 using Unity.Profiling;
 using UnityEngine;
 
-namespace Appalachia.Core.ReactionSystem.Cameras
+namespace Appalachia.ReactionSystem.Cameras
 {
     [Serializable]
     public abstract class ReactionSubsystemSingleCameraMultipleLocations : ReactionSubsystemSingleCamera

@@ -1,4 +1,4 @@
-namespace Appalachia.Core.ReactionSystem.Cameras
+namespace Appalachia.ReactionSystem.Cameras
 {
     public enum SubsystemCameraShotSelectionMode
     {
